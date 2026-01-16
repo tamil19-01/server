@@ -32,39 +32,33 @@ app.post("/todos", (req, res) => {
 // update todo
 app.put("/todos/:todoId", (req, res) => {
   const todoId = Number(req.params.todoId);
-  const { todo } = req.body;
+  const newTodo = req.body.todo;
 
-  const index = todos.findIndex((t) => t.id === todoId);
-
-  if (index === -1) {
-    return res.status(404).json({ message: "Todo not found" });
+  for (let i = 0; i < todos.length; i++) {
+    if (todos[i].id === todoId) {
+      todos[i].todo = newTodo;
+      return res.send("Todo updated successfully");
+    }
   }
 
-  todos[index].todo = todo;
-
-  res.json({
-    message: "Todo updated successfully",
-    updatedTodo: todos[index],
-  });
+  res.status(404).send("Todo not found");
 });
+
 
 // delete todo
 app.delete("/todos/:todoId", (req, res) => {
   const todoId = Number(req.params.todoId);
 
-  const index = todos.findIndex((t) => t.id === todoId);
-
-  if (index === -1) {
-    return res.status(404).json({ message: "Todo not found" });
+  for (let i = 0; i < todos.length; i++) {
+    if (todos[i].id === todoId) {
+      todos.splice(i, 1);
+      return res.send("Todo deleted successfully");
+    }
   }
 
-  const deletedTodo = todos.splice(index, 1);
-
-  res.json({
-    message: "Todo deleted successfully",
-    deletedTodo: deletedTodo[0],
-  });
+  res.status(404).send("Todo not found");
 });
+
 
 app.listen(8000, () => {
   console.log("Server is running on port 8000");
